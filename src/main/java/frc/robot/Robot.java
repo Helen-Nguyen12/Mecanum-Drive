@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.button.Button;
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
 public class Robot extends TimedRobot {
@@ -37,7 +38,7 @@ public class Robot extends TimedRobot {
   VictorSP frontRight = new VictorSP(kFrontRightChannel);
   VictorSP rearRight = new VictorSP(kRearRightChannel);
 
-   CANSparkMax flyWheel = new CANSparkMax(4, MotorType.kBrushless);
+   CANSparkMax flyWheel = new CANSparkMax(1, MotorType.kBrushless);
 
   @Override
   public void robotInit() {
@@ -45,10 +46,12 @@ public class Robot extends TimedRobot {
     // You may need to change or remove this to match your robot.
     frontRight.setInverted(true);
     rearRight.setInverted(true);
+    flyWheel.setInverted(true);
 
     m_robotDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
 
     m_stick =  new Joystick(kJoystickChannel);
+    flyWheel.set(0);
 
   }
 
@@ -57,17 +60,24 @@ public class Robot extends TimedRobot {
     // Use the joystick X axis for lateral movement, Y axis for forward
     // movement, and Z axis for rotation.
 
-    SmartDashboard.getNumber("Right Motor", frontLeft.get());
+  
+
+    SmartDashboard.getNumber("Fly Wheel", flyWheel.get());
     
     m_robotDrive.driveCartesian(m_stick.getX() * 0.1, m_stick.getY() * 0.1, m_stick.getZ() * 0.1, 0.0);
 
-   if (m_stick.getRawButtonPressed(4)){
-    flyWheel.set(1);
-   } 
-   else {
-     flyWheel.set(0);
-   }
 
+  //  if (m_stick.whileHeld(4)){
+  //   flyWheel.set(0.5);
+  //  } 
+  //  else {
+  //    flyWheel.set(0);
+  //  }
+
+
+   while (m_stick.getRawButtonPressed(4)){
+     flyWheel.set(0.5);
+   }
     
   }
 
